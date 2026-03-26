@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://koga1694.github.io/image-compressor/sitemap.xml

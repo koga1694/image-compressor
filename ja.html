@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>이미지 압축 도구 - 무료 온라인 이미지 압축</title>
-<meta name="description" content="폴더의 모든 이미지를 원하는 크기 이하로 자동 압축. JPG, PNG, BMP, WebP 지원. 서버 업로드 없이 브라우저에서 바로 처리. 압축 결과를 ZIP으로 일괄 다운로드.">
-<meta name="keywords" content="이미지 압축, 이미지 용량 줄이기, JPG 압축, PNG 압축, 사진 압축, 무료 이미지 압축, 온라인 이미지 압축, ZIP 다운로드">
+<title>画像圧縮ツール - 無料オンライン画像圧縮</title>
+<meta name="description" content="フォルダ内のすべての画像を指定サイズ以下に自動圧縮。JPG・PNG・BMP・WebP対応。サーバーへのアップロード不要でブラウザ内で完結。圧縮結果をZIPで一括ダウンロード。">
+<meta name="keywords" content="画像圧縮, 画像サイズ縮小, JPG圧縮, PNG圧縮, 写真圧縮, 無料画像圧縮, オンライン画像圧縮, 一括圧縮, ZIPダウンロード">
 <meta name="robots" content="index, follow">
-<meta name="google-site-verification" content="fe03edb157e2355d">
-<link rel="canonical" href="https://koga1694.github.io/image-compressor/">
+<link rel="canonical" href="https://koga1694.github.io/image-compressor/ja.html">
 <link rel="alternate" hreflang="ko"      href="https://koga1694.github.io/image-compressor/">
 <link rel="alternate" hreflang="en"      href="https://koga1694.github.io/image-compressor/en.html">
 <link rel="alternate" hreflang="ja"      href="https://koga1694.github.io/image-compressor/ja.html">
 <link rel="alternate" hreflang="zh-Hans" href="https://koga1694.github.io/image-compressor/zh.html">
 <link rel="alternate" hreflang="x-default" href="https://koga1694.github.io/image-compressor/">
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://koga1694.github.io/image-compressor/">
-<meta property="og:title"       content="이미지 압축 도구 - 무료 온라인 이미지 압축">
-<meta property="og:description" content="폴더의 모든 이미지를 원하는 크기 이하로 자동 압축. 서버 업로드 없이 브라우저에서 바로 처리.">
+<meta property="og:url"         content="https://koga1694.github.io/image-compressor/ja.html">
+<meta property="og:title"       content="画像圧縮ツール - 無料オンライン画像圧縮">
+<meta property="og:description" content="フォルダ内のすべての画像を指定サイズ以下に自動圧縮。サーバーへのアップロード不要でブラウザ内で完結。">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
     background: #f0f2f5;
     color: #1a1a2e;
     min-height: 100vh;
@@ -328,14 +327,14 @@
 <body>
 <div class="container">
   <header>
-    <h1>&#128444; 이미지 압축 도구</h1>
-    <p>폴더의 모든 이미지를 지정 크기 이하로 자동 압축합니다</p>
+    <h1>&#128444; 画像圧縮ツール</h1>
+    <p>フォルダ内のすべての画像を指定サイズ以下に自動圧縮します</p>
     <nav class="lang-nav" aria-label="Language">
-      <a href="index.html" class="active" aria-current="page">한국어</a>
+      <a href="index.html">한국어</a>
       <span class="sep">|</span>
       <a href="en.html">English</a>
       <span class="sep">|</span>
-      <a href="ja.html">日本語</a>
+      <a href="ja.html" class="active" aria-current="page">日本語</a>
       <span class="sep">|</span>
       <a href="zh.html">中文</a>
     </nav>
@@ -344,12 +343,12 @@
   <!-- Settings -->
   <div class="card">
     <div class="settings-row">
-      <label for="maxSize">최대 파일 크기:</label>
+      <label for="maxSize">最大ファイルサイズ:</label>
       <div class="size-input-group">
         <input type="number" id="maxSize" value="10" min="0.1" max="9999" step="0.1">
         <span>MB</span>
       </div>
-      <span style="font-size:0.82rem;color:#9ca3af;">압축 후 각 파일이 이 크기를 초과하지 않도록 합니다</span>
+      <span style="font-size:0.82rem;color:#9ca3af;">圧縮後の各ファイルがこのサイズを超えないようにします</span>
     </div>
   </div>
 
@@ -357,12 +356,12 @@
   <div class="card" id="dropCard">
     <div class="drop-zone" id="dropZone">
       <span class="drop-icon">&#128193;</span>
-      <p>이미지 파일 또는 폴더를 여기에 끌어놓거나<br>아래 버튼으로 선택하세요</p>
+      <p>画像ファイルまたはフォルダをここにドラッグ&ドロップ、<br>または下のボタンで選択してください</p>
       <div class="btn-group">
-        <button class="btn btn-primary" id="folderBtn">&#128193; 폴더 선택</button>
-        <button class="btn btn-secondary" id="fileBtn">&#128444; 파일 선택</button>
+        <button class="btn btn-primary" id="folderBtn">&#128193; フォルダを選択</button>
+        <button class="btn btn-secondary" id="fileBtn">&#128444; ファイルを選択</button>
       </div>
-      <p class="notice">지원 형식: JPG &middot; PNG &middot; BMP &middot; WebP (TIFF는 일부 브라우저에서 미지원)</p>
+      <p class="notice">対応形式: JPG &middot; PNG &middot; BMP &middot; WebP (TIFFはブラウザによって非対応の場合があります)</p>
     </div>
     <input type="file" id="folderInput" webkitdirectory multiple style="display:none">
     <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.bmp,.webp,.tif,.tiff" style="display:none">
@@ -371,22 +370,22 @@
   <!-- File list + action -->
   <div class="card hidden" id="fileListCard">
     <div class="file-info-bar" style="margin-bottom:14px;">
-      <span class="section-title" style="margin:0;">파일 목록</span>
+      <span class="section-title" style="margin:0;">ファイル一覧</span>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <span class="file-count-badge" id="fileCount">0개 파일</span>
-        <button class="btn btn-danger" id="clearBtn" style="padding:5px 14px;font-size:0.82rem;">초기화</button>
-        <button class="btn btn-primary" id="startBtn">압축 시작</button>
+        <span class="file-count-badge" id="fileCount">0件</span>
+        <button class="btn btn-danger" id="clearBtn" style="padding:5px 14px;font-size:0.82rem;">クリア</button>
+        <button class="btn btn-primary" id="startBtn">圧縮開始</button>
       </div>
     </div>
     <div class="table-wrapper">
       <table>
         <thead>
           <tr>
-            <th>파일명</th>
-            <th class="td-num">원본</th>
-            <th class="td-num">압축 후</th>
-            <th class="td-num">감소율</th>
-            <th>상태</th>
+            <th>ファイル名</th>
+            <th class="td-num">元のサイズ</th>
+            <th class="td-num">圧縮後</th>
+            <th class="td-num">削減率</th>
+            <th>状態</th>
           </tr>
         </thead>
         <tbody id="fileTableBody"></tbody>
@@ -396,7 +395,7 @@
 
   <!-- Progress -->
   <div class="card hidden" id="progressCard">
-    <div class="progress-label" id="progressLabel">준비 중...</div>
+    <div class="progress-label" id="progressLabel">準備中...</div>
     <div class="progress-bar-outer">
       <div class="progress-bar-inner" id="progressBar"></div>
     </div>
@@ -409,16 +408,16 @@
       <div class="summary-sub" id="summarySub"></div>
     </div>
     <div style="margin-top:14px;">
-      <button class="btn btn-success" id="downloadBtn">&#11015; ZIP 다운로드</button>
+      <button class="btn btn-success" id="downloadBtn">&#11015; ZIPダウンロード</button>
     </div>
   </div>
 
   <!-- Feedback -->
   <div class="card">
-    <div class="section-title">문의 / 피드백</div>
-    <textarea class="feedback-textarea" id="feedbackMsg" placeholder="문의사항이나 피드백을 남겨주세요" maxlength="1000"></textarea>
+    <div class="section-title">お問い合わせ / フィードバック</div>
+    <textarea class="feedback-textarea" id="feedbackMsg" placeholder="ご意見・ご質問をお気軽にどうぞ" maxlength="1000"></textarea>
     <div class="feedback-row">
-      <button class="btn btn-primary" id="feedbackBtn">전송</button>
+      <button class="btn btn-primary" id="feedbackBtn">送信</button>
       <span class="feedback-status" id="feedbackStatus"></span>
     </div>
   </div>
@@ -427,8 +426,8 @@
 <script>
 // ─── Constants & State ────────────────────────────────────────────────────────
 const SUPPORTED_EXT = new Set(['jpg','jpeg','png','bmp','webp','tif','tiff']);
-let pendingFiles = []; // [{file, relativePath}]
-let results      = []; // [{relativePath, blob, originalSize, resultSize, skipped}]
+let pendingFiles = [];
+let results      = [];
 let processing   = false;
 
 // ─── DOM Ready ────────────────────────────────────────────────────────────────
@@ -489,7 +488,7 @@ function addFiles(newFiles) {
   if (processing) return;
   const filtered = newFiles.filter(({ file }) => SUPPORTED_EXT.has(file.name.split('.').pop().toLowerCase()));
   if (filtered.length === 0 && newFiles.length > 0) {
-    alert('지원하는 이미지 파일이 없습니다.\n지원 형식: JPG, PNG, BMP, WebP');
+    alert('対応する画像ファイルが見つかりません。\n対応形式: JPG, PNG, BMP, WebP');
     return;
   }
   pendingFiles = pendingFiles.concat(filtered);
@@ -519,8 +518,8 @@ function renderFileTable() {
 
     const tdName = document.createElement('td');
     tdName.className = 'td-name';
-    tdName.title = relativePath;        // safe: sets attribute, not HTML
-    tdName.textContent = relativePath;  // safe: textContent, not innerHTML
+    tdName.title = relativePath;
+    tdName.textContent = relativePath;
 
     const tdOrig = document.createElement('td');
     tdOrig.className = 'td-num';
@@ -538,7 +537,7 @@ function renderFileTable() {
 
     const tdStatus = document.createElement('td');
     tdStatus.id = 'td-status-' + i;
-    tdStatus.appendChild(makeStatusBadge('wait', '대기'));
+    tdStatus.appendChild(makeStatusBadge('wait', '待機中'));
 
     tr.appendChild(tdName);
     tr.appendChild(tdOrig);
@@ -547,7 +546,7 @@ function renderFileTable() {
     tr.appendChild(tdStatus);
     tbody.appendChild(tr);
   }
-  document.getElementById('fileCount').textContent = pendingFiles.length + '개 파일';
+  document.getElementById('fileCount').textContent = pendingFiles.length + '件';
 }
 
 function clearAll() {
@@ -592,16 +591,16 @@ async function startCompression() {
 
       document.getElementById('td-result-' + i).textContent = fmtMB(res.blob.size);
       document.getElementById('td-ratio-'  + i).textContent = res.skipped ? '\u2014' : '-' + ratio.toFixed(1) + '%';
-      updateRowStatus(i, res.skipped ? 'skip' : 'ok', false, res.skipped ? '그대로 복사' : '압축 완료');
+      updateRowStatus(i, res.skipped ? 'skip' : 'ok', false, res.skipped ? 'そのままコピー' : '完了');
     } catch (err) {
       results.push({ relativePath, blob: null, originalSize: file.size, resultSize: 0, error: err.message });
-      document.getElementById('td-result-' + i).textContent = '오류';
+      document.getElementById('td-result-' + i).textContent = 'エラー';
       document.getElementById('td-ratio-'  + i).textContent = '\u2014';
-      updateRowStatus(i, 'err', false, '오류');
+      updateRowStatus(i, 'err', false, 'エラー');
     }
   }
 
-  setProgress(total, total, '완료');
+  setProgress(total, total, '完了');
   showSummary(totalOrig, totalResult, total);
   processing = false;
   document.getElementById('startBtn').disabled = false;
@@ -613,9 +612,9 @@ function setProgress(current, total, filename) {
   document.getElementById('progressBar').style.width = pct + '%';
   const label = document.getElementById('progressLabel');
   if (current < total) {
-    label.textContent = '[' + (current + 1) + '/' + total + '] ' + filename + ' 처리 중...';
+    label.textContent = '[' + (current + 1) + '/' + total + '] ' + filename + ' 処理中...';
   } else {
-    label.textContent = '완료 (총 ' + total + '개)';
+    label.textContent = '完了 (合計 ' + total + '件)';
   }
 }
 
@@ -628,14 +627,14 @@ function updateRowStatus(i, type, spinning, text) {
     sp.className = 'spinner';
     td.appendChild(sp);
   }
-  td.appendChild(makeStatusBadge(type, text || (spinning ? '처리 중' : '')));
+  td.appendChild(makeStatusBadge(type, text || (spinning ? '処理中' : '')));
 }
 
 function showSummary(totalOrig, totalResult, count) {
   const ratio = totalOrig > 0 ? (1 - totalResult / totalOrig) * 100 : 0;
   document.getElementById('summaryMain').textContent =
-    '완료: ' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '  (\ucd1d ' + ratio.toFixed(1) + '% \uac10\uc18c)';
-  document.getElementById('summarySub').textContent = count + '개 파일 처리됨';
+    '完了: ' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '  (合計 ' + ratio.toFixed(1) + '% 削減)';
+  document.getElementById('summarySub').textContent = count + '件処理しました';
   document.getElementById('summaryCard').classList.remove('hidden');
 }
 
@@ -645,7 +644,7 @@ function loadImage(file) {
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload  = () => { URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('이미지 로드 실패')); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('画像の読み込みに失敗しました')); };
     img.src = url;
   });
 }
@@ -660,7 +659,7 @@ function imgToCanvas(img, w, h) {
 
 function canvasToBlob(canvas, type, quality) {
   return new Promise((resolve, reject) => {
-    canvas.toBlob(b => b ? resolve(b) : reject(new Error('인코딩 실패')), type, quality);
+    canvas.toBlob(b => b ? resolve(b) : reject(new Error('エンコードに失敗しました')), type, quality);
   });
 }
 
@@ -698,12 +697,10 @@ async function findBestJPEGQuality(img, w, h, maxBytes, low, high) {
 }
 
 async function compressJPEG(img, W, H, maxBytes) {
-  // Try quality reduction at original resolution
   const q0 = await findBestJPEGQuality(img, W, H, maxBytes, 30, 95);
   const b0  = await canvasToBlob(imgToCanvas(img, W, H), 'image/jpeg', q0 / 100);
   if (b0.size <= maxBytes) return b0;
 
-  // Progressive downscale
   for (const scale of [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2]) {
     const nw = Math.max(1, Math.floor(W * scale));
     const nh = Math.max(1, Math.floor(H * scale));
@@ -712,7 +709,6 @@ async function compressJPEG(img, W, H, maxBytes) {
     if (b.size <= maxBytes) return b;
   }
 
-  // Last resort
   return canvasToBlob(imgToCanvas(img, Math.max(1, Math.floor(W * 0.2)), Math.max(1, Math.floor(H * 0.2))), 'image/jpeg', 0.01);
 }
 
@@ -730,10 +726,7 @@ async function compressPNG(img, W, H, maxBytes) {
   return canvasToBlob(imgToCanvas(img, Math.max(1, Math.floor(W * 0.2)), Math.max(1, Math.floor(H * 0.2))), 'image/png');
 }
 
-// ─── ZIP Builder (외부 라이브러리 없음) ──────────────────────────────────────
-// CompressionStream('deflate-raw') 사용: Chrome 80+, Firefox 113+, Safari 16.4+
-// 미지원 브라우저: STORE(무압축)로 폴백
-
+// ─── ZIP Builder ──────────────────────────────────────────────────────────────
 async function deflateData(data) {
   if (typeof CompressionStream === 'undefined') return { out: data, method: 0 };
   try {
@@ -741,8 +734,6 @@ async function deflateData(data) {
     const writer = cs.writable.getWriter();
     const reader = cs.readable.getReader();
 
-    // Write and read must run concurrently to avoid backpressure deadlock
-    // with large files (writer.write blocks until readable is consumed).
     const [, chunks] = await Promise.all([
       (async () => { await writer.write(data); await writer.close(); })(),
       (async () => {
@@ -767,7 +758,6 @@ async function deflateData(data) {
   }
 }
 
-// CRC-32 lookup table (lazily initialized)
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
   for (let i = 0; i < 256; i++) {
@@ -788,11 +778,9 @@ function w16(n) { return [(n) & 0xFF, (n >> 8) & 0xFF]; }
 function w32(n) { return [(n) & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF]; }
 
 async function buildZip(entries) {
-  // entries: [{path: string, blob: Blob}]
-  // Blob constructor accepts arrays of parts — avoids spreading large Uint8Arrays
   const enc          = new TextEncoder();
-  const localParts   = []; // local file headers + data (as separate pieces)
-  const centralParts = []; // central directory entries (as separate pieces)
+  const localParts   = [];
+  const centralParts = [];
   let offset         = 0;
   let count          = 0;
 
@@ -802,7 +790,6 @@ async function buildZip(entries) {
     const crc       = crc32(raw);
     const { out: compressed, method } = await deflateData(raw);
 
-    // Local file header (30 bytes fixed + filename)
     const lh = new Uint8Array([
       0x50, 0x4B, 0x03, 0x04,
       ...w16(20), ...w16(0), ...w16(method),
@@ -816,7 +803,6 @@ async function buildZip(entries) {
     localParts.push(lh, nameBytes, compressed);
     const entrySize = lh.length + nameBytes.length + compressed.length;
 
-    // Central directory record (46 bytes fixed + filename)
     const cd = new Uint8Array([
       0x50, 0x4B, 0x01, 0x02,
       ...w16(20), ...w16(20), ...w16(0), ...w16(method),
@@ -846,7 +832,6 @@ async function buildZip(entries) {
     ...w16(0),
   ]);
 
-  // Blob constructor concatenates parts without copying into one giant array
   return new Blob([...localParts, ...centralParts, eocd], { type: 'application/zip' });
 }
 
@@ -854,7 +839,7 @@ async function buildZip(entries) {
 async function downloadZip() {
   const btn = document.getElementById('downloadBtn');
   btn.disabled    = true;
-  btn.textContent = '\u23f3 ZIP 생성 중...';
+  btn.textContent = '\u23f3 ZIP作成中...';
 
   try {
     const valid   = results.filter(r => r.blob !== null);
@@ -872,11 +857,11 @@ async function downloadZip() {
       URL.revokeObjectURL(url);
     }, 60000);
 
-    btn.textContent = '\u2b07 ZIP 다운로드 (' + fmtMB(zipBlob.size) + ')';
+    btn.textContent = '\u2b07 ZIPダウンロード (' + fmtMB(zipBlob.size) + ')';
   } catch (err) {
     console.error('ZIP download error:', err);
-    alert('ZIP 생성 오류: ' + err.message);
-    btn.textContent = '\u2b07 ZIP 다운로드';
+    alert('ZIP作成エラー: ' + err.message);
+    btn.textContent = '\u2b07 ZIPダウンロード';
   }
   btn.disabled = false;
 }
@@ -892,8 +877,6 @@ function fmtMB(bytes) {
 
 // ─── Feedback (Discord Webhook) ───────────────────────────────────────────────
 (function () {
-  // Webhook URL is split to avoid a single visible string in source.
-  // Note: client-side only — the URL remains accessible via browser dev tools.
   const _w = ['https://discord.com/api', '/webhooks/', '1486648510416949329',
               '/TT0icwIPIVeFwuq7Dib-', 'qfFvyUYbeQH1UNC14whsNr5Q9HN-IkfDF79edOJ3saAfkmpM'].join('');
 
@@ -901,26 +884,26 @@ function fmtMB(bytes) {
     const msgEl = document.getElementById('feedbackMsg');
     const statusEl = document.getElementById('feedbackStatus');
     const msg = msgEl.value.trim();
-    if (!msg) { statusEl.textContent = '내용을 입력해주세요.'; return; }
+    if (!msg) { statusEl.textContent = 'メッセージを入力してください。'; return; }
 
     const btn = document.getElementById('feedbackBtn');
     btn.disabled = true;
-    statusEl.textContent = '전송 중...';
+    statusEl.textContent = '送信中...';
 
     try {
       const res = await fetch(_w, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: '[이미지 압축 도구 피드백]\n' + msg })
+        body: JSON.stringify({ content: '[画像圧縮ツール フィードバック]\n' + msg })
       });
       if (res.ok) {
-        statusEl.textContent = '전송되었습니다. 감사합니다!';
+        statusEl.textContent = '送信しました。ありがとうございます！';
         msgEl.value = '';
       } else {
-        statusEl.textContent = '전송 실패. 다시 시도해주세요.';
+        statusEl.textContent = '送信に失敗しました。再度お試しください。';
       }
     } catch (_) {
-      statusEl.textContent = '전송 실패. 네트워크를 확인해주세요.';
+      statusEl.textContent = '送信に失敗しました。接続を確認してください。';
     }
     btn.disabled = false;
   });
