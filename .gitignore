@@ -1,0 +1,9 @@
+# 압축 파일
+*.zip
+
+# 이미지 폴더 (드라이브 다운로드)
+drive-download-*/
+
+# OS
+.DS_Store
+Thumbs.db

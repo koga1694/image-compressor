@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이미지 압축 도구</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  header p {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .settings-row label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .size-input-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .size-input-group input {
+    width: 90px;
+    padding: 7px 10px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .size-input-group input:focus { border-color: #4f46e5; }
+
+  .size-input-group span {
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+
+  .drop-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #fafafa;
+  }
+
+  .drop-zone.drag-over {
+    border-color: #4f46e5;
+    background: #eef2ff;
+  }
+
+  .drop-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+  .drop-zone p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 9px 20px;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn:hover { opacity: 0.88; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary   { background: #4f46e5; color: #fff; }
+  .btn-secondary { background: #f3f4f6; color: #374151; border: 1.5px solid #d1d5db; }
+  .btn-success   { background: #059669; color: #fff; font-size: 1rem; padding: 11px 28px; width: 100%; }
+  .btn-danger    { background: #ef4444; color: #fff; }
+  .btn:disabled  { opacity: 0.45; cursor: not-allowed; }
+
+  .file-info-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .file-count-badge {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .progress-label {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .progress-bar-outer {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: #4f46e5;
+    border-radius: 99px;
+    transition: width 0.25s ease;
+    width: 0%;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #f9fafb;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 1.5px solid #e5e7eb;
+    white-space: nowrap;
+  }
+
+  tbody tr:hover { background: #fafafa; }
+
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+  }
+
+  .td-name {
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .td-num { text-align: right; white-space: nowrap; }
+
+  .status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .status-skip { background: #f3f4f6; color: #6b7280; }
+  .status-ok   { background: #d1fae5; color: #065f46; }
+  .status-err  { background: #fee2e2; color: #991b1b; }
+  .status-wait { background: #fef9c3; color: #713f12; }
+
+  .summary-box {
+    background: #eef2ff;
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: center;
+  }
+
+  .summary-main { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+  .summary-sub  { font-size: 0.88rem; color: #6b7280; }
+
+  .hidden { display: none !important; }
+
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 14px;
+  }
+
+  .notice { font-size: 0.8rem; color: #9ca3af; margin-top: 10px; text-align: center; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid #c7d2fe;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>&#128444; 이미지 압축 도구</h1>
+    <p>폴더의 모든 이미지를 지정 크기 이하로 자동 압축합니다</p>
+  </header>
+
+  <!-- Settings -->
+  <div class="card">
+    <div class="settings-row">
+      <label for="maxSize">최대 파일 크기:</label>
+      <div class="size-input-group">
+        <input type="number" id="maxSize" value="10" min="0.1" max="9999" step="0.1">
+        <span>MB</span>
+      </div>
+      <span style="font-size:0.82rem;color:#9ca3af;">압축 후 각 파일이 이 크기를 초과하지 않도록 합니다</span>
+    </div>
+  </div>
+
+  <!-- Drop zone -->
+  <div class="card" id="dropCard">
+    <div class="drop-zone" id="dropZone">
+      <span class="drop-icon">&#128193;</span>
+      <p>이미지 파일 또는 폴더를 여기에 끌어놓거나<br>아래 버튼으로 선택하세요</p>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="folderBtn">&#128193; 폴더 선택</button>
+        <button class="btn btn-secondary" id="fileBtn">&#128444; 파일 선택</button>
+      </div>
+      <p class="notice">지원 형식: JPG &middot; PNG &middot; BMP &middot; WebP (TIFF는 일부 브라우저에서 미지원)</p>
+    </div>
+    <input type="file" id="folderInput" webkitdirectory multiple style="display:none">
+    <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.bmp,.webp,.tif,.tiff" style="display:none">
+  </div>
+
+  <!-- File list + action -->
+  <div class="card hidden" id="fileListCard">
+    <div class="file-info-bar" style="margin-bottom:14px;">
+      <span class="section-title" style="margin:0;">파일 목록</span>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="file-count-badge" id="fileCount">0개 파일</span>
+        <button class="btn btn-danger" id="clearBtn" style="padding:5px 14px;font-size:0.82rem;">초기화</button>
+        <button class="btn btn-primary" id="startBtn">압축 시작</button>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>파일명</th>
+            <th class="td-num">원본</th>
+            <th class="td-num">압축 후</th>
+            <th class="td-num">감소율</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody id="fileTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card hidden" id="progressCard">
+    <div class="progress-label" id="progressLabel">준비 중...</div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Summary + Download -->
+  <div class="card hidden" id="summaryCard">
+    <div class="summary-box">
+      <div class="summary-main" id="summaryMain"></div>
+      <div class="summary-sub" id="summarySub"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <button class="btn btn-success" id="downloadBtn">&#11015; ZIP 다운로드</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Constants & State ────────────────────────────────────────────────────────
+const SUPPORTED_EXT = new Set(['jpg','jpeg','png','bmp','webp','tif','tiff']);
+let pendingFiles = []; // [{file, relativePath}]
+let results      = []; // [{relativePath, blob, originalSize, resultSize, skipped}]
+let processing   = false;
+
+// ─── DOM Ready ────────────────────────────────────────────────────────────────
+document.getElementById('folderBtn').addEventListener('click', () => document.getElementById('folderInput').click());
+document.getElementById('fileBtn').addEventListener('click',   () => document.getElementById('fileInput').click());
+document.getElementById('clearBtn').addEventListener('click',  clearAll);
+document.getElementById('startBtn').addEventListener('click',  startCompression);
+document.getElementById('downloadBtn').addEventListener('click', downloadZip);
+
+// ─── File Input Handlers ──────────────────────────────────────────────────────
+document.getElementById('folderInput').addEventListener('change', e => {
+  const files = Array.from(e.target.files).map(f => ({
+    file: f,
+    relativePath: f.webkitRelativePath || f.name
+  }));
+  addFiles(files);
+  e.target.value = '';
+});
+
+document.getElementById('fileInput').addEventListener('change', e => {
+  const files = Array.from(e.target.files).map(f => ({ file: f, relativePath: f.name }));
+  addFiles(files);
+  e.target.value = '';
+});
+
+// ─── Drag & Drop ──────────────────────────────────────────────────────────────
+const dropZone = document.getElementById('dropZone');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', e => { if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('drag-over'); });
+dropZone.addEventListener('drop', async e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const files = [];
+  for (const item of Array.from(e.dataTransfer.items)) {
+    const entry = item.webkitGetAsEntry && item.webkitGetAsEntry();
+    if (entry) await readEntry(entry, '', files);
+  }
+  addFiles(files);
+});
+
+async function readEntry(entry, basePath, acc) {
+  if (entry.isFile) {
+    const file = await new Promise((res, rej) => entry.file(res, rej));
+    acc.push({ file, relativePath: basePath + entry.name });
+  } else if (entry.isDirectory) {
+    const reader = entry.createReader();
+    let batch;
+    do {
+      batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+      for (const child of batch) await readEntry(child, basePath + entry.name + '/', acc);
+    } while (batch.length > 0);
+  }
+}
+
+// ─── File List Management ─────────────────────────────────────────────────────
+function addFiles(newFiles) {
+  if (processing) return;
+  const filtered = newFiles.filter(({ file }) => SUPPORTED_EXT.has(file.name.split('.').pop().toLowerCase()));
+  if (filtered.length === 0 && newFiles.length > 0) {
+    alert('지원하는 이미지 파일이 없습니다.\n지원 형식: JPG, PNG, BMP, WebP');
+    return;
+  }
+  pendingFiles = pendingFiles.concat(filtered);
+  renderFileTable();
+  document.getElementById('fileListCard').classList.remove('hidden');
+  document.getElementById('summaryCard').classList.add('hidden');
+}
+
+function makeStatusBadge(type, text) {
+  const span = document.createElement('span');
+  span.className = 'status-badge status-' + type;
+  span.textContent = text;
+  return span;
+}
+
+function renderFileTable() {
+  const tbody = document.getElementById('fileTableBody');
+  tbody.innerHTML = '';
+  for (let i = 0; i < pendingFiles.length; i++) {
+    const { file, relativePath } = pendingFiles[i];
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+
+    const tdName = document.createElement('td');
+    tdName.className = 'td-name';
+    tdName.title = relativePath;        // safe: sets attribute, not HTML
+    tdName.textContent = relativePath;  // safe: textContent, not innerHTML
+
+    const tdOrig = document.createElement('td');
+    tdOrig.className = 'td-num';
+    tdOrig.textContent = fmtMB(file.size);
+
+    const tdResult = document.createElement('td');
+    tdResult.className = 'td-num';
+    tdResult.id = 'td-result-' + i;
+    tdResult.textContent = '\u2014';
+
+    const tdRatio = document.createElement('td');
+    tdRatio.className = 'td-num';
+    tdRatio.id = 'td-ratio-' + i;
+    tdRatio.textContent = '\u2014';
+
+    const tdStatus = document.createElement('td');
+    tdStatus.id = 'td-status-' + i;
+    tdStatus.appendChild(makeStatusBadge('wait', '대기'));
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdOrig);
+    tr.appendChild(tdResult);
+    tr.appendChild(tdRatio);
+    tr.appendChild(tdStatus);
+    tbody.appendChild(tr);
+  }
+  document.getElementById('fileCount').textContent = pendingFiles.length + '개 파일';
+}
+
+function clearAll() {
+  if (processing) return;
+  pendingFiles = [];
+  results = [];
+  document.getElementById('fileListCard').classList.add('hidden');
+  document.getElementById('progressCard').classList.add('hidden');
+  document.getElementById('summaryCard').classList.add('hidden');
+  document.getElementById('fileTableBody').innerHTML = '';
+}
+
+// ─── Compression Orchestrator ─────────────────────────────────────────────────
+async function startCompression() {
+  if (processing || pendingFiles.length === 0) return;
+  processing = true;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('clearBtn').disabled = true;
+  document.getElementById('progressCard').classList.remove('hidden');
+  document.getElementById('summaryCard').classList.add('hidden');
+  results = [];
+
+  const maxSizeMB = parseFloat(document.getElementById('maxSize').value) || 10;
+  const total = pendingFiles.length;
+  let totalOrig = 0, totalResult = 0;
+
+  for (let i = 0; i < total; i++) {
+    const { file, relativePath } = pendingFiles[i];
+    setProgress(i, total, relativePath);
+    updateRowStatus(i, 'wait', true);
+
+    try {
+      const res = await compressImage(file, maxSizeMB);
+      totalOrig   += file.size;
+      totalResult += res.blob.size;
+
+      const ratio  = file.size > 0 ? (1 - res.blob.size / file.size) * 100 : 0;
+      let outPath  = relativePath;
+      if (res.ext) outPath = relativePath.replace(/\.[^.]+$/, res.ext);
+
+      results.push({ relativePath: outPath, blob: res.blob, originalSize: file.size, resultSize: res.blob.size, skipped: res.skipped });
+
+      document.getElementById('td-result-' + i).textContent = fmtMB(res.blob.size);
+      document.getElementById('td-ratio-'  + i).textContent = res.skipped ? '\u2014' : '-' + ratio.toFixed(1) + '%';
+      updateRowStatus(i, res.skipped ? 'skip' : 'ok', false, res.skipped ? '그대로 복사' : '압축 완료');
+    } catch (err) {
+      results.push({ relativePath, blob: null, originalSize: file.size, resultSize: 0, error: err.message });
+      document.getElementById('td-result-' + i).textContent = '오류';
+      document.getElementById('td-ratio-'  + i).textContent = '\u2014';
+      updateRowStatus(i, 'err', false, '오류');
+    }
+  }
+
+  setProgress(total, total, '완료');
+  showSummary(totalOrig, totalResult, total);
+  processing = false;
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('clearBtn').disabled = false;
+}
+
+function setProgress(current, total, filename) {
+  const pct = total > 0 ? (current / total) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  const label = document.getElementById('progressLabel');
+  if (current < total) {
+    label.textContent = '[' + (current + 1) + '/' + total + '] ' + filename + ' 처리 중...';
+  } else {
+    label.textContent = '완료 (총 ' + total + '개)';
+  }
+}
+
+function updateRowStatus(i, type, spinning, text) {
+  const td = document.getElementById('td-status-' + i);
+  if (!td) return;
+  td.innerHTML = '';
+  if (spinning) {
+    const sp = document.createElement('span');
+    sp.className = 'spinner';
+    td.appendChild(sp);
+  }
+  td.appendChild(makeStatusBadge(type, text || (spinning ? '처리 중' : '')));
+}
+
+function showSummary(totalOrig, totalResult, count) {
+  const ratio = totalOrig > 0 ? (1 - totalResult / totalOrig) * 100 : 0;
+  document.getElementById('summaryMain').textContent =
+    '완료: ' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '  (\ucd1d ' + ratio.toFixed(1) + '% \uac10\uc18c)';
+  document.getElementById('summarySub').textContent = count + '개 파일 처리됨';
+  document.getElementById('summaryCard').classList.remove('hidden');
+}
+
+// ─── Image Compression Core ───────────────────────────────────────────────────
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload  = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('이미지 로드 실패')); };
+    img.src = url;
+  });
+}
+
+function imgToCanvas(img, w, h) {
+  const c = document.createElement('canvas');
+  c.width  = w;
+  c.height = h;
+  c.getContext('2d').drawImage(img, 0, 0, w, h);
+  return c;
+}
+
+function canvasToBlob(canvas, type, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(b => b ? resolve(b) : reject(new Error('인코딩 실패')), type, quality);
+  });
+}
+
+function hasAlpha(canvas) {
+  const data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+  for (let i = 3; i < data.length; i += 4) if (data[i] < 255) return true;
+  return false;
+}
+
+async function compressImage(file, maxSizeMB) {
+  const maxBytes = maxSizeMB * 1024 * 1024;
+  if (file.size <= maxBytes) return { blob: file, skipped: true, ext: null };
+
+  const img   = await loadImage(file);
+  const W = img.naturalWidth, H = img.naturalHeight;
+  const canvas = imgToCanvas(img, W, H);
+
+  if (hasAlpha(canvas)) {
+    return { blob: await compressPNG(img, W, H, maxBytes), skipped: false, ext: '.png' };
+  } else {
+    return { blob: await compressJPEG(img, W, H, maxBytes), skipped: false, ext: '.jpg' };
+  }
+}
+
+async function findBestJPEGQuality(img, w, h, maxBytes, low, high) {
+  let best = low;
+  while (low <= high) {
+    const mid    = (low + high) >> 1;
+    const canvas = imgToCanvas(img, w, h);
+    const blob   = await canvasToBlob(canvas, 'image/jpeg', mid / 100);
+    if (blob.size <= maxBytes) { best = mid; low  = mid + 1; }
+    else                       { high = mid - 1; }
+  }
+  return best;
+}
+
+async function compressJPEG(img, W, H, maxBytes) {
+  // Try quality reduction at original resolution
+  const q0 = await findBestJPEGQuality(img, W, H, maxBytes, 30, 95);
+  const b0  = await canvasToBlob(imgToCanvas(img, W, H), 'image/jpeg', q0 / 100);
+  if (b0.size <= maxBytes) return b0;
+
+  // Progressive downscale
+  for (const scale of [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2]) {
+    const nw = Math.max(1, Math.floor(W * scale));
+    const nh = Math.max(1, Math.floor(H * scale));
+    const q  = await findBestJPEGQuality(img, nw, nh, maxBytes, 30, 95);
+    const b  = await canvasToBlob(imgToCanvas(img, nw, nh), 'image/jpeg', q / 100);
+    if (b.size <= maxBytes) return b;
+  }
+
+  // Last resort
+  return canvasToBlob(imgToCanvas(img, Math.max(1, Math.floor(W * 0.2)), Math.max(1, Math.floor(H * 0.2))), 'image/jpeg', 0.01);
+}
+
+async function compressPNG(img, W, H, maxBytes) {
+  const b0 = await canvasToBlob(imgToCanvas(img, W, H), 'image/png');
+  if (b0.size <= maxBytes) return b0;
+
+  for (const scale of [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2]) {
+    const nw = Math.max(1, Math.floor(W * scale));
+    const nh = Math.max(1, Math.floor(H * scale));
+    const b  = await canvasToBlob(imgToCanvas(img, nw, nh), 'image/png');
+    if (b.size <= maxBytes) return b;
+  }
+
+  return canvasToBlob(imgToCanvas(img, Math.max(1, Math.floor(W * 0.2)), Math.max(1, Math.floor(H * 0.2))), 'image/png');
+}
+
+// ─── ZIP Builder (외부 라이브러리 없음) ──────────────────────────────────────
+// CompressionStream('deflate-raw') 사용: Chrome 80+, Firefox 113+, Safari 16.4+
+// 미지원 브라우저: STORE(무압축)로 폴백
+
+async function deflateData(data) {
+  if (typeof CompressionStream === 'undefined') return { out: data, method: 0 };
+  try {
+    const cs     = new CompressionStream('deflate-raw');
+    const writer = cs.writable.getWriter();
+    const reader = cs.readable.getReader();
+
+    // Write and read must run concurrently to avoid backpressure deadlock
+    // with large files (writer.write blocks until readable is consumed).
+    const [, chunks] = await Promise.all([
+      (async () => { await writer.write(data); await writer.close(); })(),
+      (async () => {
+        const buf = [];
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf.push(value);
+        }
+        return buf;
+      })(),
+    ]);
+
+    let len = 0;
+    for (const c of chunks) len += c.length;
+    const out = new Uint8Array(len);
+    let off = 0;
+    for (const c of chunks) { out.set(c, off); off += c.length; }
+    return { out, method: 8 };
+  } catch (_) {
+    return { out: data, method: 0 };
+  }
+}
+
+// CRC-32 lookup table (lazily initialized)
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let v = i;
+    for (let j = 0; j < 8; j++) v = (v & 1) ? (0xEDB88320 ^ (v >>> 1)) : (v >>> 1);
+    t[i] = v;
+  }
+  return t;
+})();
+
+function crc32(buf) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < buf.length; i++) c = CRC_TABLE[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function w16(n) { return [(n) & 0xFF, (n >> 8) & 0xFF]; }
+function w32(n) { return [(n) & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF]; }
+
+async function buildZip(entries) {
+  // entries: [{path: string, blob: Blob}]
+  // Blob constructor accepts arrays of parts — avoids spreading large Uint8Arrays
+  const enc          = new TextEncoder();
+  const localParts   = []; // local file headers + data (as separate pieces)
+  const centralParts = []; // central directory entries (as separate pieces)
+  let offset         = 0;
+  let count          = 0;
+
+  for (const { path, blob } of entries) {
+    const nameBytes = enc.encode(path);
+    const raw       = new Uint8Array(await blob.arrayBuffer());
+    const crc       = crc32(raw);
+    const { out: compressed, method } = await deflateData(raw);
+
+    // Local file header (30 bytes fixed + filename)
+    const lh = new Uint8Array([
+      0x50, 0x4B, 0x03, 0x04,
+      ...w16(20), ...w16(0), ...w16(method),
+      ...w16(0), ...w16(0),
+      ...w32(crc),
+      ...w32(compressed.length),
+      ...w32(raw.length),
+      ...w16(nameBytes.length),
+      ...w16(0),
+    ]);
+    localParts.push(lh, nameBytes, compressed);
+    const entrySize = lh.length + nameBytes.length + compressed.length;
+
+    // Central directory record (46 bytes fixed + filename)
+    const cd = new Uint8Array([
+      0x50, 0x4B, 0x01, 0x02,
+      ...w16(20), ...w16(20), ...w16(0), ...w16(method),
+      ...w16(0), ...w16(0),
+      ...w32(crc),
+      ...w32(compressed.length),
+      ...w32(raw.length),
+      ...w16(nameBytes.length),
+      ...w16(0), ...w16(0),
+      ...w16(0), ...w16(0), ...w32(0),
+      ...w32(offset),
+    ]);
+    centralParts.push(cd, nameBytes);
+
+    offset += entrySize;
+    count++;
+  }
+
+  let centralLen = 0;
+  for (const p of centralParts) centralLen += p.length;
+
+  const eocd = new Uint8Array([
+    0x50, 0x4B, 0x05, 0x06,
+    ...w16(0), ...w16(0),
+    ...w16(count), ...w16(count),
+    ...w32(centralLen), ...w32(offset),
+    ...w16(0),
+  ]);
+
+  // Blob constructor concatenates parts without copying into one giant array
+  return new Blob([...localParts, ...centralParts, eocd], { type: 'application/zip' });
+}
+
+// ─── Download ─────────────────────────────────────────────────────────────────
+async function downloadZip() {
+  const btn = document.getElementById('downloadBtn');
+  btn.disabled    = true;
+  btn.textContent = '\u23f3 ZIP 생성 중...';
+
+  try {
+    const valid   = results.filter(r => r.blob !== null);
+    const entries = valid.map(r => ({ path: r.relativePath, blob: r.blob }));
+    const zipBlob = await buildZip(entries);
+
+    const url = URL.createObjectURL(zipBlob);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = 'images_compressed.zip';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 60000);
+
+    btn.textContent = '\u2b07 ZIP 다운로드 (' + fmtMB(zipBlob.size) + ')';
+  } catch (err) {
+    console.error('ZIP download error:', err);
+    alert('ZIP 생성 오류: ' + err.message);
+    btn.textContent = '\u2b07 ZIP 다운로드';
+  }
+  btn.disabled = false;
+}
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+function fmtMB(bytes) {
+  const mb = bytes / (1024 * 1024);
+  if (mb >= 100) return mb.toFixed(0) + ' MB';
+  if (mb >= 10)  return mb.toFixed(1) + ' MB';
+  if (mb >= 1)   return mb.toFixed(2) + ' MB';
+  return (bytes / 1024).toFixed(1) + ' KB';
+}
+</script>
+</body>
+</html>
