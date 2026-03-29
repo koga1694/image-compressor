@@ -409,7 +409,7 @@
       <div class="summary-sub" id="summarySub"></div>
     </div>
     <div style="margin-top:14px;">
-      <button class="btn btn-success" id="downloadBtn">&#11015; ZIP 다운로드</button>
+      <button class="btn btn-success" id="downloadBtn">&#11015; 다운로드</button>
     </div>
   </div>
 
@@ -649,6 +649,13 @@ function showSummary(totalOrig, totalResult, count) {
     '완료: ' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '  (\ucd1d ' + ratio.toFixed(1) + '% \uac10\uc18c)';
   document.getElementById('summarySub').textContent = count + '개 파일 처리됨';
   document.getElementById('summaryCard').classList.remove('hidden');
+  const valid = results.filter(r => r.blob !== null);
+  const btn = document.getElementById('downloadBtn');
+  if (valid.length === 1) {
+    btn.textContent = '\u2b07 이미지 다운로드';
+  } else {
+    btn.textContent = '\u2b07 ZIP 다운로드';
+  }
 }
 
 // ─── Image Compression Core ───────────────────────────────────────────────────
@@ -864,12 +871,39 @@ async function buildZip(entries) {
 
 // ─── Download ─────────────────────────────────────────────────────────────────
 async function downloadZip() {
-  const btn = document.getElementById('downloadBtn');
-  btn.disabled    = true;
-  btn.textContent = '\u23f3 ZIP 생성 중...';
+  const btn   = document.getElementById('downloadBtn');
+  const valid = results.filter(r => r.blob !== null);
+  btn.disabled = true;
 
+  // 파일이 1개면 ZIP 없이 이미지 직접 다운로드
+  if (valid.length === 1) {
+    btn.textContent = '\u23f3 준비 중...';
+    try {
+      const { relativePath, blob } = valid[0];
+      const filename = relativePath.split('/').pop();
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 60000);
+      btn.textContent = '\u2b07 이미지 다운로드 (' + fmtMB(blob.size) + ')';
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('다운로드 오류: ' + err.message);
+      btn.textContent = '\u2b07 이미지 다운로드';
+    }
+    btn.disabled = false;
+    return;
+  }
+
+  // 2개 이상이면 기존 ZIP 다운로드
+  btn.textContent = '\u23f3 ZIP 생성 중...';
   try {
-    const valid   = results.filter(r => r.blob !== null);
     const entries = valid.map(r => ({ path: r.relativePath, blob: r.blob }));
     const zipBlob = await buildZip(entries);
 

@@ -408,7 +408,7 @@
       <div class="summary-sub" id="summarySub"></div>
     </div>
     <div style="margin-top:14px;">
-      <button class="btn btn-success" id="downloadBtn">&#11015; ZIPダウンロード</button>
+      <button class="btn btn-success" id="downloadBtn">&#11015; ダウンロード</button>
     </div>
   </div>
 
@@ -648,6 +648,13 @@ function showSummary(totalOrig, totalResult, count) {
     '完了: ' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '  (合計 ' + ratio.toFixed(1) + '% 削減)';
   document.getElementById('summarySub').textContent = count + '件処理しました';
   document.getElementById('summaryCard').classList.remove('hidden');
+  const valid = results.filter(r => r.blob !== null);
+  const btn = document.getElementById('downloadBtn');
+  if (valid.length === 1) {
+    btn.textContent = '\u2b07 画像をダウンロード';
+  } else {
+    btn.textContent = '\u2b07 ZIPダウンロード';
+  }
 }
 
 // ─── Image Compression Core ───────────────────────────────────────────────────
@@ -849,12 +856,37 @@ async function buildZip(entries) {
 
 // ─── Download ─────────────────────────────────────────────────────────────────
 async function downloadZip() {
-  const btn = document.getElementById('downloadBtn');
-  btn.disabled    = true;
-  btn.textContent = '\u23f3 ZIP作成中...';
+  const btn   = document.getElementById('downloadBtn');
+  const valid = results.filter(r => r.blob !== null);
+  btn.disabled = true;
 
+  if (valid.length === 1) {
+    btn.textContent = '\u23f3 準備中...';
+    try {
+      const { relativePath, blob } = valid[0];
+      const filename = relativePath.split('/').pop();
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 60000);
+      btn.textContent = '\u2b07 画像をダウンロード (' + fmtMB(blob.size) + ')';
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('ダウンロードエラー: ' + err.message);
+      btn.textContent = '\u2b07 画像をダウンロード';
+    }
+    btn.disabled = false;
+    return;
+  }
+
+  btn.textContent = '\u23f3 ZIP作成中...';
   try {
-    const valid   = results.filter(r => r.blob !== null);
     const entries = valid.map(r => ({ path: r.relativePath, blob: r.blob }));
     const zipBlob = await buildZip(entries);
 

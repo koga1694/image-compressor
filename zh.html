@@ -408,7 +408,7 @@
       <div class="summary-sub" id="summarySub"></div>
     </div>
     <div style="margin-top:14px;">
-      <button class="btn btn-success" id="downloadBtn">&#11015; 下载 ZIP</button>
+      <button class="btn btn-success" id="downloadBtn">&#11015; 下载</button>
     </div>
   </div>
 
@@ -648,6 +648,13 @@ function showSummary(totalOrig, totalResult, count) {
     '完成：' + fmtMB(totalOrig) + ' \u2192 ' + fmtMB(totalResult) + '（共减少 ' + ratio.toFixed(1) + '%）';
   document.getElementById('summarySub').textContent = '已处理 ' + count + ' 个文件';
   document.getElementById('summaryCard').classList.remove('hidden');
+  const valid = results.filter(r => r.blob !== null);
+  const btn = document.getElementById('downloadBtn');
+  if (valid.length === 1) {
+    btn.textContent = '\u2b07 下载图片';
+  } else {
+    btn.textContent = '\u2b07 下载 ZIP';
+  }
 }
 
 // ─── Image Compression Core ───────────────────────────────────────────────────
@@ -849,12 +856,37 @@ async function buildZip(entries) {
 
 // ─── Download ─────────────────────────────────────────────────────────────────
 async function downloadZip() {
-  const btn = document.getElementById('downloadBtn');
-  btn.disabled    = true;
-  btn.textContent = '\u23f3 正在生成 ZIP...';
+  const btn   = document.getElementById('downloadBtn');
+  const valid = results.filter(r => r.blob !== null);
+  btn.disabled = true;
 
+  if (valid.length === 1) {
+    btn.textContent = '\u23f3 准备中...';
+    try {
+      const { relativePath, blob } = valid[0];
+      const filename = relativePath.split('/').pop();
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 60000);
+      btn.textContent = '\u2b07 下载图片 (' + fmtMB(blob.size) + ')';
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('下载错误：' + err.message);
+      btn.textContent = '\u2b07 下载图片';
+    }
+    btn.disabled = false;
+    return;
+  }
+
+  btn.textContent = '\u23f3 正在生成 ZIP...';
   try {
-    const valid   = results.filter(r => r.blob !== null);
     const entries = valid.map(r => ({ path: r.relativePath, blob: r.blob }));
     const zipBlob = await buildZip(entries);
 
